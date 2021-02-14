@@ -1,3 +1,11 @@
-.label {
+.day {
+    -fx-background-color: lightgray;
     -fx-text-fill: blue;
+    -fx-alignment: top-right;
+    -fx-border-color: white;
+    -fx-label-padding: 5;
+}
+
+.day.clickable {
+    -fx-cursor: hand;
 }
