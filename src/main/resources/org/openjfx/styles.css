@@ -9,3 +9,7 @@
 .day.clickable {
     -fx-cursor: hand;
 }
+
+.day.current-day {
+    -fx-border-color: red;
+}

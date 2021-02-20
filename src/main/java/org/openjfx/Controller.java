@@ -1,15 +1,15 @@
 package org.openjfx;
 
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.ResourceBundle;
-
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
@@ -20,8 +20,14 @@ public class Controller implements Initializable {
     public Label day21, day22, day23, day24, day25, day26, day27;
     public Label day28, day29, day30, day31, day32, day33, day34;
     public Label day35, day36, day37, day38, day39, day40, day41;
+    public Label yearMonthLabel;
+    public Pane eventsPane;
+    public StackPane root;
+    public Label eventsPaneTitle;
 
     private int currentMonth = 0, currentYear = 1900;
+    private Label clickedDay = null;
+    private int[] openedOn = new int[]{currentYear, currentMonth};
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -33,11 +39,9 @@ public class Controller implements Initializable {
         sat.setText("Saturday");
         sun.setText("Sunday");
 
-        Calendar cal = Calendar.getInstance();
-        currentMonth = cal.get(Calendar.MONTH);
-        currentYear = cal.get(Calendar.YEAR);
-
-        renderCurrentMonth();
+        setCurrentMonth(null);
+        eventsPane.visibleProperty().set(false);
+        eventsPane.managedProperty().set(false);
     }
 
     private void renderCurrentMonth(){
@@ -53,14 +57,19 @@ public class Controller implements Initializable {
         for (Label day: days){
             day.setText("");
             day.getStyleClass().remove("clickable");
+            day.getStyleClass().remove("current-day");
             day.onMouseClickedProperty().unbind();
         }
 
         Calendar cal = Calendar.getInstance();
+        int currentDay = cal.get(Calendar.DAY_OF_MONTH);
+        int realCurrentYear = cal.get(Calendar.YEAR);
+        int realCurrentMonth = cal.get(Calendar.MONTH);
 
         cal.set(Calendar.MONTH, currentMonth);
         cal.set(Calendar.YEAR, currentYear);
         cal.set(Calendar.DAY_OF_MONTH, 1);
+        yearMonthLabel.setText(currentYear + ", " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
         int offset = cal.get(Calendar.DAY_OF_WEEK) - 1;
         if (offset == 0) {
             offset = 7;
@@ -70,8 +79,25 @@ public class Controller implements Initializable {
             days[i + offset - 1].setText(String.valueOf(i + 1));
             days[i + offset - 1].getStyleClass().add("clickable");
             days[i + offset - 1].onMouseClickedProperty().set((MouseEvent t) -> {
-                System.out.println(t.getSource().toString());
+                Label l = (Label) t.getTarget();
+                // toggle events pane
+                if (clickedDay != l) {
+                    eventsPane.managedProperty().set(true);
+                    eventsPane.visibleProperty().set(true);
+                    clickedDay = l;
+                } else if (currentYear == openedOn[0] && currentMonth == openedOn[1]) {
+                    eventsPane.managedProperty().set(false);
+                    eventsPane.visibleProperty().set(false);
+                    clickedDay = null;
+                }
+                openedOn[0] = currentYear;
+                openedOn[1] = currentMonth;
+
+                eventsPaneTitle.setText("Events for " + l.getText() + " of " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
             });
+        }
+        if (currentYear == realCurrentYear && currentMonth == realCurrentMonth){
+            days[currentDay + offset - 2].getStyleClass().add("current-day");
         }
     }
 
@@ -91,6 +117,14 @@ public class Controller implements Initializable {
             currentYear -= 1;
             currentMonth = 11;
         }
+
+        renderCurrentMonth();
+    }
+
+    public void setCurrentMonth(MouseEvent mouseEvent) {
+        Calendar cal = Calendar.getInstance();
+        currentMonth = cal.get(Calendar.MONTH);
+        currentYear = cal.get(Calendar.YEAR);
 
         renderCurrentMonth();
     }
