@@ -15,10 +15,6 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", dt=" + dt +
-                ", description='" + description +
-                "', notify_before=" + notifyBefore + "}";
+        return description + " [" + dt + "]";
     }
 }

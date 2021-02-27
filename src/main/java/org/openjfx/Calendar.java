@@ -1,5 +1,9 @@
 package org.openjfx;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+
 public class Calendar extends Thread {
     private boolean shouldRun = true;
     private final Storage storage;
@@ -7,11 +11,8 @@ public class Calendar extends Thread {
         this.storage = storage;
     }
 
-    public Event[] getNearestEvents() {
-        return storage.getNearest();
-    }
-    public Event[] getEvents() {
-        return storage.getAll();
+    public HashMap<Date, ArrayList<Event>> getEvents(int month, int year) {
+        return storage.getEventsForMonth(month, year);
     }
 
     public void writeEvent(String dt, String description, int notifyBefore) {

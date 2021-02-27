@@ -4,11 +4,17 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <StackPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.Controller">
     <children>
         <HBox>
@@ -105,7 +111,28 @@
             </GridPane>
             <Pane fx:id="eventsPane" prefWidth="400">
                 <children>
-                    <Label fx:id="eventsPaneTitle"></Label>
+                    <VBox>
+                        <children>
+                            <Label fx:id="eventsPaneTitle" />
+                            <ListView fx:id="eventsPaneEvents" prefWidth="200">
+                                <placeholder>
+                                    <Label text="No events" />
+                                </placeholder>
+                            </ListView>
+                            <TextField fx:id="eventsDescription" promptText="Description" />
+                            <ChoiceBox fx:id="eventsNotifyBefore">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="5" />
+                                        <String fx:value="10" />
+                                        <String fx:value="30" />
+                                    </FXCollections>
+                                </items>
+                            </ChoiceBox>
+                            <Button text="Save" fx:id="updateEvent" />
+                            <Button text="Delete" fx:id="deleteEvent" />
+                        </children>
+                    </VBox>
                 </children>
             </Pane>
         </HBox>

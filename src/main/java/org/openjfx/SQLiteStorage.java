@@ -1,7 +1,11 @@
 package org.openjfx;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SQLiteStorage implements Storage {
     SQLiteStorage() {
@@ -109,14 +113,31 @@ public class SQLiteStorage implements Storage {
 
         return events.toArray(new Event[0]);
     }
-    public Event[] getAll() {
-        String query = "SELECT * FROM events";
-        return get(query);
-    }
+    public HashMap<Date, ArrayList<Event>> getEventsForMonth(int month, int year) {
+        // TODO: rewrite with prepare statement
+        String query = "SELECT * FROM events WHERE cast(strftime('%m', dt) as int) = " + month + " AND cast(strftime('%Y', dt) as int) = " + year;
+        Event[] events = get(query);
+        HashMap<Date, ArrayList<Event>> monthEvents = new HashMap<>();
 
-    public Event[] getNearest(){
-        String query = "SELECT * FROM events WHERE dt BETWEEN datetime('now') AND datetime('now', '+7 days')";
-        return get(query);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        Calendar calendar = Calendar.getInstance();
+        for (Event event : events) {
+            try {
+                Date date = formatter.parse(event.dt);
+                calendar.setTime(date);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.HOUR, 0);
+                date = calendar.getTime();
+                if (!monthEvents.containsKey(date)) {
+                    monthEvents.put(date, new ArrayList<>());
+                }
+                monthEvents.get(date).add(event);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return monthEvents;
     }
 
     public Event[] getNearestToNotify(){

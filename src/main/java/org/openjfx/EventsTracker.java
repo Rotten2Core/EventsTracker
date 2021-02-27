@@ -1,9 +1,5 @@
 package org.openjfx;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class EventsTracker extends Application {
-    private static Calendar calendar;
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -27,7 +23,6 @@ public class EventsTracker extends Application {
 
     public static void main(String[] args) {
         launch();
-        calendar = new Calendar(new SQLiteStorage());
     }
 
 //    public static void main(String[] args) {

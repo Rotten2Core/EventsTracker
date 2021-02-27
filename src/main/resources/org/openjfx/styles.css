@@ -13,3 +13,7 @@
 .day.current-day {
     -fx-border-color: red;
 }
+
+.day.has-events {
+    -fx-text-fill: green;
+}
